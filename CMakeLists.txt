@@ -8,6 +8,7 @@ add_library(AptabaseCpp
 )
 target_link_libraries(AptabaseCpp 
 	PUBLIC nlohmann_json 
+	PUBLIC httplib
 )
 target_include_directories(AptabaseCpp 
 	PUBLIC "./include"

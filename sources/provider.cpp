@@ -1,4 +1,4 @@
-﻿#include "provider.hpp"
+﻿#include "aptabase/provider.hpp"
 #define CPPHTTPLIB_OPENSSL_SUPPORT
 #include <httplib.h>
 #include <ctime>
@@ -59,14 +59,12 @@ void AptabaseAnalyticsProvider::RecordEvent(const std::string& event_name, const
 	payload.sessionId = m_SessionId;
 	payload.timeStamp = GetCurrentTimestamp();
 
-	payload.systemProps = {
-		.isDebug = m_IsDebug,
-		.locale = "en-US",
-		.appVersion = "1.0.0",
-		.sdkVersion = "aptabase-cpp@0.1.0",
-		.osName = "Linux",
-		.osVersion = "5.15"
-	};
+	payload.systemProps.isDebug = m_IsDebug;
+	payload.systemProps.locale = "en-US";
+	payload.systemProps.appVersion = "1.0.0";
+	payload.systemProps.sdkVersion = "aptabase-cpp@0.1.0";
+	payload.systemProps.osName = "Linux";
+	payload.systemProps.osVersion = "5.15";
 
 	payload.eventAttributes = attributes;
 
@@ -80,7 +78,7 @@ void AptabaseAnalyticsProvider::RecordEvent(const std::string& event_name, const
 
 void AptabaseAnalyticsProvider::FlushWorkerLoop(){
 	std::mutex cv_mutex;
-	std::unique_lockstd::mutex lock(cv_mutex);
+	std::unique_lock<std::mutex> lock(cv_mutex);
 
 	while (!m_StopThread)
 	{
@@ -98,7 +96,7 @@ void AptabaseAnalyticsProvider::FlushWorkerLoop(){
 void AptabaseAnalyticsProvider::FlushEvents(){
 	std::vector<AptabaseEventPayload> batch;
 	{
-		std::lock_guardstd::mutex lock(m_BatchMutex);
+		std::lock_guard<std::mutex> lock(m_BatchMutex);
 		if (m_BatchedEvents.empty())
 			return;
 
@@ -143,7 +141,7 @@ std::string AptabaseAnalyticsProvider::GetCurrentTimestamp() const{
 
 std::string AptabaseAnalyticsProvider::GenerateSessionId() const{
 	auto now = std::chrono::system_clock::now().time_since_epoch();
-	auto seconds = std::chrono::duration_caststd::chrono::seconds (now).count();
+	auto seconds = std::chrono::duration_cast<std::chrono::seconds>(now).count();
 
 	std::random_device rd;
 	std::mt19937 rng(rd());
