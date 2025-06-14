@@ -4,6 +4,7 @@ project ("Aptabase-Cpp")
 
 add_library(AptabaseCpp 
 	"./sources/model.cpp"
+	"./sources/provider.cpp"
 )
 target_link_libraries(AptabaseCpp 
 	PUBLIC nlohmann_json 
