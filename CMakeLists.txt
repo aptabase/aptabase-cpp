@@ -17,8 +17,11 @@ endif()
 
 if(CMAKE_APTABASE_USE_BOOST)
 	find_package(Boost REQUIRED)
-	include_directories(${Boost_INCLUDE_DIR})
-	link_directories(${Boost_LIBRARY_DIR_RELEASE})
+	find_package(OpenSSL REQUIRED)
+
+	target_link_directories(AptabaseCpp PUBLIC ${Boost_LIBRARY_DIR_RELEASE})
+	target_include_directories(AptabaseCpp PUBLIC ${OPENSSL_INCLUDE_DIR} PUBLIC ${Boost_INCLUDE_DIR})
+	target_link_libraries(AptabaseCpp PUBLIC ${OPENSSL_LIBRARIES} PUBLIC ${Boost_LIBRARIES})
 
 	target_compile_definitions(AptabaseCpp PUBLIC APTABASE_USE_BOOST=1)
 endif()
