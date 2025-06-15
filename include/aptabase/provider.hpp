@@ -44,6 +44,8 @@ private:
 
 	void SendEventsNow(std::vector<AptabaseEventPayload> events);
 
+	static std::int32_t MakePostRequest(const std::string &hostname, const std::string &path, const std::map<std::string, std::string> &headers, const std::string& body);
+
 	std::string GetCurrentTimestamp() const;
 
 	std::string GenerateSessionId() const;

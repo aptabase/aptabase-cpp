@@ -8,8 +8,21 @@ add_library(AptabaseCpp
 )
 target_link_libraries(AptabaseCpp 
 	PUBLIC nlohmann_json 
-	PUBLIC httplib
 )
+
+if(CMAKE_APTABASE_USE_HTTPLIB)
+	target_link_libraries(AptabaseCpp PUBLIC httplib)
+	target_compile_definitions(AptabaseCpp PUBLIC APTABASE_USE_HTTPLIB=1)
+endif()
+
+if(CMAKE_APTABASE_USE_BOOST)
+	find_package(Boost REQUIRED)
+	include_directories(${Boost_INCLUDE_DIR})
+	link_directories(${Boost_LIBRARY_DIR_RELEASE})
+
+	target_compile_definitions(AptabaseCpp PUBLIC APTABASE_USE_BOOST=1)
+endif()
+
 target_include_directories(AptabaseCpp 
 	PUBLIC "./include"
 )
