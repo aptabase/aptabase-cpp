@@ -2,13 +2,12 @@
 
 #include <string>
 #include <vector>
+#include <variant>
 #include <nlohmann/json.hpp>
 
 struct ExtendedAnalyticsEventAttribute {
 	std::string key;
-	std::string value;
-
-	NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(ExtendedAnalyticsEventAttribute, key, value)
+	std::variant<std::string, float, double> value;
 };
 
 struct AptabaseSystemProperties {
@@ -29,5 +28,9 @@ struct AptabaseEventPayload {
 	AptabaseSystemProperties systemProps;
 	std::vector<ExtendedAnalyticsEventAttribute> eventAttributes;
 
-	NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AptabaseEventPayload, timeStamp, sessionId, eventName, systemProps, eventAttributes)
+	nlohmann::json ToJson()const;
+
+	friend void to_json(nlohmann::json& json, const AptabaseEventPayload& payload) {
+		json = payload.ToJson();
+	}
 };

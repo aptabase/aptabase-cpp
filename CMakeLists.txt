@@ -16,3 +16,4 @@ target_include_directories(AptabaseCpp
 target_precompile_headers(AptabaseCpp 
 	PUBLIC "./include/aptabase/model.hpp"
 )
+target_compile_features(AptabaseCpp PRIVATE cxx_std_17)
