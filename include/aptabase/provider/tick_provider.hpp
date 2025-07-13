@@ -11,7 +11,7 @@ class AptabaseTickProvider: public AptabaseProvider{
 	std::int32_t m_RunningRequests = 0;
 	LogFunctionType m_Logger = AptabaseProvider::DefaultLogFunction;
 public:
-	AptabaseTickProvider(std::string &&url, std::string &&app_key, std::unique_ptr<AptabaseHttpClient> &&client, float flush_interval_seconds = 5.f);
+	AptabaseTickProvider(std::unique_ptr<AptabaseHttpClient> &&client, const std::string &app_key, const std::string &url);
 	
 	void RecordEvent(AptabaseEventPayload &&event)override;
 

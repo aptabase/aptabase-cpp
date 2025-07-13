@@ -33,16 +33,20 @@ private:
 
     LogFunctionType m_LogFunction = DefaultLogFunction;
 public:
-    explicit AptabaseWorkerProvider(std::unique_ptr<AptabaseHttpClient> &&client,
-                                    const std::string &app_key,
-                                    const std::string &api_url);
+    AptabaseWorkerProvider(std::unique_ptr<AptabaseHttpClient> &&client, const std::string &app_key, const std::string &api_url);
+
     ~AptabaseWorkerProvider();
 
     void RecordEvent(AptabaseEventPayload &&event) override;
+
     void Flush() override;
+
     bool AnyPending() const override;
+
     bool AnySending() const override;
+
     bool IsTickRequired() const override { return false; }
+
     void SetLog(LogFunctionType&& log) { m_LogFunction = std::move(log); }
 
 private:

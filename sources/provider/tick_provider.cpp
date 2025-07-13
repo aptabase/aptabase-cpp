@@ -1,8 +1,8 @@
 #include "aptabase/provider/tick_provider.hpp"
 
-AptabaseTickProvider::AptabaseTickProvider(std::string &&url, std::string &&app_key, std::unique_ptr<AptabaseHttpClient> &&client, float flush_interval_seconds):
-	m_Url(std::move(url)),
-	m_AppKey(std::move(app_key)),
+AptabaseTickProvider::AptabaseTickProvider(std::unique_ptr<AptabaseHttpClient> &&client, const std::string &app_key, const std::string &url):
+	m_Url(url),
+	m_AppKey(app_key),
 	m_HttpClient(std::move(client))
 {}
 
