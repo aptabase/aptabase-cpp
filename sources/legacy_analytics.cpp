@@ -20,7 +20,7 @@
 #include <iomanip>
 #include <random>
 
-AptabaseAnalyticsProvider::AptabaseAnalyticsProvider(std::string app_key, std::string api_url, bool is_debug_mode): 
+AptabaseAnalyticsLegacy::AptabaseAnalyticsLegacy(std::string app_key, std::string api_url, bool is_debug_mode): 
 	m_AppKey(std::move(app_key)), 
 	m_ApiUrl(std::move(api_url)), 
 	m_IsDebug(is_debug_mode)
@@ -30,10 +30,10 @@ AptabaseAnalyticsProvider::AptabaseAnalyticsProvider(std::string app_key, std::s
 	StartSession();
 
 	m_StopThread = false;
-	m_FlushThread = std::thread(&AptabaseAnalyticsProvider::FlushWorkerLoop, this);
+	m_FlushThread = std::thread(&AptabaseAnalyticsLegacy::FlushWorkerLoop, this);
 }
 
-AptabaseAnalyticsProvider::~AptabaseAnalyticsProvider(){
+AptabaseAnalyticsLegacy::~AptabaseAnalyticsLegacy(){
 	EndSession();
 
 	m_StopThread = true;
@@ -45,12 +45,12 @@ AptabaseAnalyticsProvider::~AptabaseAnalyticsProvider(){
 	}
 }
 
-void AptabaseAnalyticsProvider::StartSession(){
+void AptabaseAnalyticsLegacy::StartSession(){
 	m_HasActiveSession = true;
 	m_SessionId = GenerateSessionId();
 }
 
-void AptabaseAnalyticsProvider::EndSession(){
+void AptabaseAnalyticsLegacy::EndSession(){
 	if (!m_HasActiveSession)
 	{
 		return;
@@ -60,7 +60,7 @@ void AptabaseAnalyticsProvider::EndSession(){
 	m_HasActiveSession = false;
 }
 
-void AptabaseAnalyticsProvider::RecordEvent(const std::string& event_name, const std::vector<ExtendedAnalyticsEventAttribute>& attributes){
+void AptabaseAnalyticsLegacy::RecordEvent(const std::string& event_name, const std::vector<ExtendedAnalyticsEventAttribute>& attributes){
 	if (!m_HasActiveSession)
 	{
 		std::cerr << "[Aptabase] Cannot record event: no active session.\n";
@@ -89,7 +89,7 @@ void AptabaseAnalyticsProvider::RecordEvent(const std::string& event_name, const
 	m_FlushCV.notify_all();
 }
 
-void AptabaseAnalyticsProvider::FlushWorkerLoop(){
+void AptabaseAnalyticsLegacy::FlushWorkerLoop(){
 	std::mutex cv_mutex;
 	std::unique_lock<std::mutex> lock(cv_mutex);
 
@@ -106,7 +106,7 @@ void AptabaseAnalyticsProvider::FlushWorkerLoop(){
 	}
 }
 
-void AptabaseAnalyticsProvider::FlushEvents(){
+void AptabaseAnalyticsLegacy::FlushEvents(){
 	std::vector<AptabaseEventPayload> batch;
 	{
 		std::lock_guard<std::mutex> lock(m_BatchMutex);
@@ -118,7 +118,7 @@ void AptabaseAnalyticsProvider::FlushEvents(){
 	SendEventsNow(batch);
 }
 
-void AptabaseAnalyticsProvider::SendEventsNow(std::vector<AptabaseEventPayload> events){
+void AptabaseAnalyticsLegacy::SendEventsNow(std::vector<AptabaseEventPayload> events){
 	nlohmann::json json_payload = events;
 	std::string body = json_payload.dump();
 	
@@ -134,7 +134,7 @@ void AptabaseAnalyticsProvider::SendEventsNow(std::vector<AptabaseEventPayload> 
 	}
 }
 
-std::int32_t AptabaseAnalyticsProvider::MakePostRequest(const std::string& hostname, const std::string& path, const std::map<std::string, std::string>& headers, const std::string& body) {
+std::int32_t AptabaseAnalyticsLegacy::MakePostRequest(const std::string& hostname, const std::string& path, const std::map<std::string, std::string>& headers, const std::string& body) {
 #ifdef APTABASE_USE_HTTPLIB
 	httplib::Client client(hostname);
 	auto res = client.Post(path, headers, body, headers.count("Content-Type") ? headers.at("Content-Type") : "text/plain");
@@ -253,7 +253,7 @@ std::int32_t AptabaseAnalyticsProvider::MakePostRequest(const std::string& hostn
 #endif
 }
 
-std::string AptabaseAnalyticsProvider::GetCurrentTimestamp() const{
+std::string AptabaseAnalyticsLegacy::GetCurrentTimestamp() const{
 	auto now = std::chrono::system_clock::now();
 	auto itt = std::chrono::system_clock::to_time_t(now);
 	std::ostringstream ss;
@@ -261,7 +261,7 @@ std::string AptabaseAnalyticsProvider::GetCurrentTimestamp() const{
 	return ss.str();
 }
 
-std::string AptabaseAnalyticsProvider::GenerateSessionId() const{
+std::string AptabaseAnalyticsLegacy::GenerateSessionId() const{
 	auto now = std::chrono::system_clock::now().time_since_epoch();
 	auto seconds = std::chrono::duration_cast<std::chrono::seconds>(now).count();
 

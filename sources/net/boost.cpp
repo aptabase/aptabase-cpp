@@ -1,4 +1,4 @@
-#include "boost.hpp"
+#include "aptabase/net/boost.hpp"
 
 #include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
@@ -105,11 +105,10 @@ void AptabaseBoostHttpClient::MakeRequest(AptabaseHttpClientMethod method, const
         response_stream >> status_code;
         std::getline(response_stream, status_message);
         
-        return static_cast<std::int32_t>(status_code);
+        if(complete) complete(static_cast<std::int32_t>(status_code));
     }
     catch (const std::exception& e) {
-		std::cerr << e.what() << std::endl;
-        return 0;
+        if(complete) complete(0);
     }
 
 

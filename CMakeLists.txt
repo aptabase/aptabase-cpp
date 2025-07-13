@@ -9,8 +9,6 @@ add_library(AptabaseCpp
 	"./sources/provider/provider.cpp"
 	"./sources/provider/worker_provider.cpp"
 	"./sources/net/client.cpp"
-	"./sources/net/httplib.cpp"
-	"./sources/net/boost.cpp"
 )
 
 target_link_libraries(AptabaseCpp 
@@ -18,11 +16,15 @@ target_link_libraries(AptabaseCpp
 )
 
 if(CMAKE_APTABASE_USE_HTTPLIB)
+	target_sources(AptabaseCpp PRIVATE "./sources/net/httplib.cpp")
+
 	target_link_libraries(AptabaseCpp PUBLIC httplib)
 	target_compile_definitions(AptabaseCpp PUBLIC APTABASE_USE_HTTPLIB=1)
 endif()
 
 if(CMAKE_APTABASE_USE_BOOST)
+	target_sources(AptabaseCpp PRIVATE "./sources/net/boost.cpp")
+
 	find_package(Boost REQUIRED)
 	find_package(OpenSSL REQUIRED)
 

@@ -9,7 +9,7 @@
 #include <atomic>
 #include <chrono>
 
-class AptabaseAnalyticsProvider{
+class AptabaseAnalyticsLegacy{
 private:
 	std::string m_SessionId;
 	bool m_HasActiveSession = false;
@@ -27,9 +27,9 @@ private:
 	std::atomic<bool> m_StopThread = false;
 	std::condition_variable m_FlushCV;
 public:
-	explicit AptabaseAnalyticsProvider(std::string app_key, std::string api_url, bool is_debug_mode = false);
+	explicit AptabaseAnalyticsLegacy(std::string app_key, std::string api_url, bool is_debug_mode = false);
 
-	~AptabaseAnalyticsProvider();
+	~AptabaseAnalyticsLegacy();
 
 	void StartSession();
 

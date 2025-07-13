@@ -82,9 +82,9 @@ void AptabaseWorkerProvider::CopyAndFlushBatch()
         events,
         [this, count = events.size()](std::int32_t status) {
             if (status >= 200 && status < 300) {
-                m_LogFunction(AptabaseProviderVerbosity::Info, "[Aptabase] ✅ " + std::to_string(count) + " event(s) sent.");
+                m_LogFunction(AptabaseProviderVerbosity::Info, std::to_string(count) + " event(s) sent.");
             } else {
-                m_LogFunction(AptabaseProviderVerbosity::Error, "[Aptabase] ❌ HTTP " + std::to_string(status) + " while sending " + std::to_string(count) + " event(s).");
+                m_LogFunction(AptabaseProviderVerbosity::Error, "HTTP " + std::to_string(status) + " while sending " + std::to_string(count) + " event(s).");
             }
             m_PendingSends.fetch_sub(1);
         });

@@ -3,7 +3,7 @@
 #include "model.hpp"
 #include "provider/provider.hpp"
 
-class Analytics {
+class AptabaseAnalytics {
 	std::unique_ptr<AptabaseProvider> m_Provider;
 
 	std::string m_SessionId;
@@ -14,7 +14,7 @@ class Analytics {
 
 	AptabaseProvider::LogFunctionType m_LogFunction;
 public:
-	Analytics(std::unique_ptr<AptabaseProvider> &&provider, bool is_debug = false);
+	AptabaseAnalytics(std::unique_ptr<AptabaseProvider> &&provider, bool is_debug = false);
 
 	void StartSession();
 
@@ -35,6 +35,8 @@ public:
 	void SetAppVersion(std::string &&app_version);
 
 	void SetLocale(std::string &&locale);
+
+	void SetLog(AptabaseProvider::LogFunctionType &&log);
 
 private:
 	std::string GetCurrentTimestamp() const;

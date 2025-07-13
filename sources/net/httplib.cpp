@@ -1,5 +1,9 @@
 #include "aptabase/net/httplib.hpp"
-#define CPPHTTPLIB_OPENSSL_SUPPORT
+
+#ifndef CPPHTTPLIB_OPENSSL_SUPPORT
+#define CPPHTTPLIB_OPENSSL_SUPPORT 1
+#endif
+
 #include <httplib.h>
 
 void AptabaseHttplibClient::MakeRequest(AptabaseHttpClientMethod method, const std::string& hostname, const std::string& path, const std::map<std::string, std::string>& headers, std::string&& body, CompleteCallbackType&& complete){

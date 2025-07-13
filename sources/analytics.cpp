@@ -2,32 +2,32 @@
 #include <random>
 #include <sstream>
 
-Analytics::Analytics(std::unique_ptr<AptabaseProvider> &&provider, bool is_debug):
+AptabaseAnalytics::AptabaseAnalytics(std::unique_ptr<AptabaseProvider> &&provider, bool is_debug):
 	m_Provider(std::move(provider)),
 	m_IsDebug(is_debug)
 {}
 
-void Analytics::Tick() {
+void AptabaseAnalytics::Tick() {
 	if(m_Provider && IsTickRequired())
 		m_Provider->Tick();
 }
 
-void Analytics::StartSession() {
+void AptabaseAnalytics::StartSession() {
 	if(IsInSession())
 		EndSession();
 
 	m_SessionId = GenerateSessionId();
 }
 
-void Analytics::EndSession() {
+void AptabaseAnalytics::EndSession() {
 	m_SessionId = {};
 }
 
-bool Analytics::IsInSession()const {
+bool AptabaseAnalytics::IsInSession()const {
 	return m_SessionId.size();
 }
 
-void Analytics::RecordEvent(const std::string& event_name, const std::vector<ExtendedAnalyticsEventAttribute>& attributes) {
+void AptabaseAnalytics::RecordEvent(const std::string& event_name, const std::vector<ExtendedAnalyticsEventAttribute>& attributes) {
 	AptabaseEventPayload payload;
 	payload.eventName = event_name;
 	payload.sessionId = m_SessionId;
@@ -46,27 +46,32 @@ void Analytics::RecordEvent(const std::string& event_name, const std::vector<Ext
 		m_Provider->RecordEvent(std::move(payload));
 }
 
-bool Analytics::IsTickRequired()const {
+bool AptabaseAnalytics::IsTickRequired()const {
 	return m_Provider ? m_Provider->IsTickRequired() : false;
 }
 
-void Analytics::SetDebug(bool is_debug) {
+void AptabaseAnalytics::SetDebug(bool is_debug) {
 	m_IsDebug = is_debug;
 }
 
-bool Analytics::IsDebug()const {
+bool AptabaseAnalytics::IsDebug()const {
 	return m_IsDebug;
 }
 
-void Analytics::SetAppVersion(std::string&& app_version) {
+void AptabaseAnalytics::SetAppVersion(std::string&& app_version) {
 	m_AppVersion = std::move(app_version);
 }
 
-void Analytics::SetLocale(std::string&& locale) {
+void AptabaseAnalytics::SetLocale(std::string&& locale) {
 	m_Locale = std::move(locale);
 }
 
-std::string Analytics::GetCurrentTimestamp() const{
+void AptabaseAnalytics::SetLog(AptabaseProvider::LogFunctionType&& log) {
+	if(m_Provider)
+		m_Provider->SetLog(std::move(log));
+}
+
+std::string AptabaseAnalytics::GetCurrentTimestamp() const{
 	auto now = std::chrono::system_clock::now();
 	auto itt = std::chrono::system_clock::to_time_t(now);
 	std::ostringstream ss;
@@ -74,7 +79,7 @@ std::string Analytics::GetCurrentTimestamp() const{
 	return ss.str();
 }
 
-std::string Analytics::GenerateSessionId() const{
+std::string AptabaseAnalytics::GenerateSessionId() const{
 	auto now = std::chrono::system_clock::now().time_since_epoch();
 	auto seconds = std::chrono::duration_cast<std::chrono::seconds>(now).count();
 
