@@ -4,8 +4,15 @@ project ("Aptabase-Cpp")
 
 add_library(AptabaseCpp 
 	"./sources/model.cpp"
-	"./sources/provider.cpp"
+	"./sources/analytics.cpp"
+	"./sources/provider/tick_provider.cpp"
+	"./sources/provider/provider.cpp"
+	"./sources/provider/worker_provider.cpp"
+	"./sources/net/client.cpp"
+	"./sources/net/httplib.cpp"
+	"./sources/net/boost.cpp"
 )
+
 target_link_libraries(AptabaseCpp 
 	PUBLIC nlohmann_json 
 )
