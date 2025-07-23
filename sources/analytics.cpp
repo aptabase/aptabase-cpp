@@ -1,5 +1,6 @@
 #include "aptabase/analytics.hpp"
 #include <random>
+#include <chrono>
 #include <sstream>
 
 AptabaseAnalytics::AptabaseAnalytics(std::unique_ptr<AptabaseProvider> &&provider, bool is_debug):
@@ -12,11 +13,11 @@ void AptabaseAnalytics::Tick() {
 		m_Provider->Tick();
 }
 
-void AptabaseAnalytics::StartSession() {
+void AptabaseAnalytics::StartSession(const std::string &session_id) {
 	if(IsInSession())
 		EndSession();
-
-	m_SessionId = GenerateSessionId();
+	
+	m_SessionId = session_id.size() ? session_id : GenerateSessionId();
 }
 
 void AptabaseAnalytics::EndSession() {
@@ -37,8 +38,8 @@ void AptabaseAnalytics::RecordEvent(const std::string& event_name, const std::ve
 	payload.systemProps.locale = m_Locale;
 	payload.systemProps.appVersion = m_AppVersion;
 	payload.systemProps.sdkVersion = "aptabase-cpp@0.1.0";
-	payload.systemProps.osName = "Linux";
-	payload.systemProps.osVersion = "5.15";
+	payload.systemProps.osName = m_OsName;
+	payload.systemProps.osVersion = m_OsVersion;
 
 	payload.eventAttributes = attributes;
 
@@ -64,6 +65,14 @@ void AptabaseAnalytics::SetAppVersion(std::string&& app_version) {
 
 void AptabaseAnalytics::SetLocale(std::string&& locale) {
 	m_Locale = std::move(locale);
+}
+
+void AptabaseAnalytics::SetOsVersion(std::string&& os_version) {
+	m_OsVersion = std::move(os_version);
+}
+
+void AptabaseAnalytics::SetOsName(std::string&& os_name) {
+	m_OsName = std::move(os_name);
 }
 
 void AptabaseAnalytics::SetLog(AptabaseProvider::LogFunctionType&& log) {
