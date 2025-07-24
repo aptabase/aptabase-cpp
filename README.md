@@ -28,7 +28,7 @@ Aptabase-cpp uses CMake as it's build system. It's user's responsibility to supp
 CMake example with boost enabled
 
 ```cmake
-# Code to include nlohmann_json, boost and openssl dependencies
+# Code to include boost and openssl dependencies
 # Based on your setup, it may be add_subdirectory or find_package
 
 set(CMAKE_APTABASE_USE_BOOST ON)
@@ -38,7 +38,7 @@ add_subdirectory(path/to/aptabase-cpp)
 CMake example with cpp-httplib enabled
 
 ```cmake
-# Code to include nlohmann_json, cpp-httplib and openssl dependencies
+# Code to include cpp-httplib and openssl dependencies
 # Based on your setup, it may be add_subdirectory or find_package
 
 set(CMAKE_APTABASE_USE_HTTPLIB ON)

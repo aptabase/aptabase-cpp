@@ -3,38 +3,33 @@
 #include <string>
 #include <vector>
 #include <variant>
-#include <nlohmann/json.hpp>
 
 namespace Aptabase{
 
 	struct EventAttribute {
-		std::string key;
-		std::variant<std::string, float, double> value;
+		std::string Key;
+		std::variant<std::string, float, double> Value;
 	};
 
 	struct EventProperties {
-		bool isDebug = false;
-		std::string locale;
-		std::string appVersion;
-		std::string sdkVersion;
-		std::string osName;
-		std::string osVersion;
-
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(EventProperties, isDebug, locale, appVersion, sdkVersion, osName, osVersion)
+		bool IsDebug = false;
+		std::string Locale;
+		std::string AppVersion;
+		std::string SdkVersion;
+		std::string OsName;
+		std::string OsVersion;
 	};
 
 	struct Event {
-		std::string timeStamp;
-		std::string sessionId;
-		std::string eventName;
-		EventProperties systemProps;
-		std::vector<EventAttribute> eventAttributes;
+		std::string TimeStamp;
+		std::string SessionId;
+		std::string EventName;
+		EventProperties SystemProps;
+		std::vector<EventAttribute> EventAttributes;
 
-		nlohmann::json ToJson()const;
+		std::string ToJson()const;
 
-		friend void to_json(nlohmann::json& json, const Event& payload) {
-			json = payload.ToJson();
-		}
+		static std::string ToJson(const std::vector<Event> &events);
 	};
 
 }//namespace Aptabase::

@@ -1,4 +1,5 @@
 #include "aptabase/net/client.hpp"
+#include <cassert>
 
 void Aptabase::HttpClient::PostEvents(const std::string& url, const std::string& app_key, const std::vector<Event>& events, CompleteCallbackType &&callback){
 	std::map<std::string, std::string> headers = { 
@@ -6,7 +7,7 @@ void Aptabase::HttpClient::PostEvents(const std::string& url, const std::string&
 		{"Content-Type", "application/json"}
 	};
 
-	std::string body = nlohmann::json(events).dump();
+	std::string body = Event::ToJson(events);
 
 	MakeRequest(HttpClientMethod::Post, url, "/api/v0/events", headers, std::move(body), std::move(callback));
 }

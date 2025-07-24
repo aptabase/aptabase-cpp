@@ -11,10 +11,6 @@ add_library(AptabaseCpp
 	"./sources/net/client.cpp"
 )
 
-target_link_libraries(AptabaseCpp 
-	PUBLIC nlohmann_json 
-)
-
 if(CMAKE_APTABASE_USE_HTTPLIB)
 	target_sources(AptabaseCpp PRIVATE "./sources/net/httplib.cpp")
 
@@ -40,5 +36,6 @@ target_include_directories(AptabaseCpp
 )
 target_precompile_headers(AptabaseCpp 
 	PUBLIC "./include/aptabase/model.hpp"
+	PUBLIC "./include/aptabase/analytics.hpp"
 )
 target_compile_features(AptabaseCpp PRIVATE cxx_std_17)

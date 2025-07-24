@@ -30,18 +30,18 @@ bool Aptabase::Analytics::IsInSession()const {
 
 void Aptabase::Analytics::RecordEvent(const std::string& event_name, const std::vector<EventAttribute>& attributes) {
 	Event event;
-	event.eventName = event_name;
-	event.sessionId = m_SessionId;
-	event.timeStamp = GetCurrentTimestamp();
+	event.EventName = event_name;
+	event.SessionId = m_SessionId;
+	event.TimeStamp = GetCurrentTimestamp();
 
-	event.systemProps.isDebug = m_IsDebug;
-	event.systemProps.locale = m_Locale;
-	event.systemProps.appVersion = m_AppVersion;
-	event.systemProps.sdkVersion = "aptabase-cpp@0.1.0";
-	event.systemProps.osName = m_OsName;
-	event.systemProps.osVersion = m_OsVersion;
+	event.SystemProps.IsDebug = m_IsDebug;
+	event.SystemProps.Locale = m_Locale;
+	event.SystemProps.AppVersion = m_AppVersion;
+	event.SystemProps.SdkVersion = "aptabase-cpp@0.1.0";
+	event.SystemProps.OsName = m_OsName;
+	event.SystemProps.OsVersion = m_OsVersion;
 
-	event.eventAttributes = attributes;
+	event.EventAttributes = attributes;
 	
 	RecordEvent(std::move(event));
 }
