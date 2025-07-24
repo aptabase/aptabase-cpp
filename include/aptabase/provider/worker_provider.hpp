@@ -13,44 +13,48 @@
 #include "provider.hpp"
 #include "aptabase/net/client.hpp"
 
-class AptabaseWorkerProvider : public AptabaseProvider {
-private:
-    std::unique_ptr<AptabaseHttpClient> m_Client;
-    std::string m_AppKey;
-    std::string m_ApiUrl;
+namespace Aptabase{
 
-    std::vector<AptabaseEventPayload> m_PendingEvents;
-    mutable std::mutex m_EventMutex;
+    class WorkerProvider : public Provider {
+    private:
+        std::unique_ptr<HttpClient> m_Client;
+        std::string m_AppKey;
+        std::string m_ApiUrl;
 
-    std::atomic<int> m_PendingSends{0};
-    std::atomic<bool> m_StopFlag{false};
+        std::vector<Event> m_PendingEvents;
+        mutable std::mutex m_EventMutex;
 
-    std::thread m_WorkerThread;
-    std::condition_variable m_Condition;
-    std::mutex m_ConditionMutex;
+        std::atomic<int> m_PendingSends{0};
+        std::atomic<bool> m_StopFlag{false};
 
-    std::chrono::seconds m_FlushInterval;
+        std::thread m_WorkerThread;
+        std::condition_variable m_Condition;
+        std::mutex m_ConditionMutex;
 
-    LogFunctionType m_LogFunction = DefaultLogFunction;
-public:
-    AptabaseWorkerProvider(std::unique_ptr<AptabaseHttpClient> &&client, const std::string &app_key, const std::string &api_url);
+        std::chrono::seconds m_FlushInterval;
 
-    ~AptabaseWorkerProvider();
+        LogFunctionType m_LogFunction = DefaultLogFunction;
+    public:
+        WorkerProvider(std::unique_ptr<HttpClient> &&client, const std::string &app_key, const std::string &api_url);
 
-    void RecordEvent(AptabaseEventPayload &&event) override;
+        ~WorkerProvider();
 
-    void Flush() override;
+        void RecordEvent(Event &&event) override;
 
-    bool AnyPending() const override;
+        void Flush() override;
 
-    bool AnySending() const override;
+        bool AnyPending() const override;
 
-    bool IsTickRequired() const override { return false; }
+        bool AnySending() const override;
 
-    void SetLog(LogFunctionType&& log) { m_LogFunction = std::move(log); }
+        bool IsTickRequired() const override { return false; }
 
-private:
-    void WorkerLoop();
-    void CopyAndFlushBatch();
+        void SetLog(LogFunctionType&& log) { m_LogFunction = std::move(log); }
 
-};
+    private:
+        void WorkerLoop();
+        void CopyAndFlushBatch();
+
+    };
+
+}//namespace Aptabase::

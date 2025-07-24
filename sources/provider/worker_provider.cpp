@@ -1,6 +1,6 @@
 ﻿#include "aptabase/provider/worker_provider.hpp"
 
-AptabaseWorkerProvider::AptabaseWorkerProvider(std::unique_ptr<AptabaseHttpClient> &&client,
+Aptabase::WorkerProvider::WorkerProvider(std::unique_ptr<HttpClient> &&client,
                                                const std::string &app_key,
                                                const std::string &api_url)
     : m_Client(std::move(client)),
@@ -8,10 +8,10 @@ AptabaseWorkerProvider::AptabaseWorkerProvider(std::unique_ptr<AptabaseHttpClien
       m_ApiUrl(api_url),
       m_FlushInterval(std::chrono::seconds(5))
 {
-    m_WorkerThread = std::thread(&AptabaseWorkerProvider::WorkerLoop, this);
+    m_WorkerThread = std::thread(&Aptabase::WorkerProvider::WorkerLoop, this);
 }
 
-AptabaseWorkerProvider::~AptabaseWorkerProvider()
+Aptabase::WorkerProvider::~WorkerProvider()
 {
     m_StopFlag = true;
     m_Condition.notify_all();
@@ -22,7 +22,7 @@ AptabaseWorkerProvider::~AptabaseWorkerProvider()
         m_WorkerThread.join();
 }
 
-void AptabaseWorkerProvider::RecordEvent(AptabaseEventPayload &&event)
+void Aptabase::WorkerProvider::RecordEvent(Event &&event)
 {
     {
         std::lock_guard<std::mutex> lock(m_EventMutex);
@@ -31,23 +31,23 @@ void AptabaseWorkerProvider::RecordEvent(AptabaseEventPayload &&event)
     m_Condition.notify_one();  // wake up flush thread
 }
 
-bool AptabaseWorkerProvider::AnyPending() const
+bool Aptabase::WorkerProvider::AnyPending() const
 {
     std::lock_guard<std::mutex> lock(m_EventMutex);
     return !m_PendingEvents.empty();
 }
 
-bool AptabaseWorkerProvider::AnySending() const
+bool Aptabase::WorkerProvider::AnySending() const
 {
     return m_PendingSends.load() > 0;
 }
 
-void AptabaseWorkerProvider::Flush()
+void Aptabase::WorkerProvider::Flush()
 {
     CopyAndFlushBatch();
 }
 
-void AptabaseWorkerProvider::WorkerLoop()
+void Aptabase::WorkerProvider::WorkerLoop()
 {
     std::unique_lock<std::mutex> lock(m_ConditionMutex);
     while (!m_StopFlag.load()) {
@@ -64,9 +64,9 @@ void AptabaseWorkerProvider::WorkerLoop()
     }
 }
 
-void AptabaseWorkerProvider::CopyAndFlushBatch()
+void Aptabase::WorkerProvider::CopyAndFlushBatch()
 {
-    std::vector<AptabaseEventPayload> events;
+    std::vector<Event> events;
     {
         std::lock_guard<std::mutex> lock(m_EventMutex);
         if (m_PendingEvents.empty())
@@ -82,9 +82,9 @@ void AptabaseWorkerProvider::CopyAndFlushBatch()
         events,
         [this, count = events.size()](std::int32_t status) {
             if (status >= 200 && status < 300) {
-                m_LogFunction(AptabaseProviderVerbosity::Info, std::to_string(count) + " event(s) sent.");
+                m_LogFunction(Verbosity::Info, std::to_string(count) + " event(s) sent.");
             } else {
-                m_LogFunction(AptabaseProviderVerbosity::Error, "HTTP " + std::to_string(status) + " while sending " + std::to_string(count) + " event(s).");
+                m_LogFunction(Verbosity::Error, "HTTP " + std::to_string(status) + " while sending " + std::to_string(count) + " event(s).");
             }
             m_PendingSends.fetch_sub(1);
         });

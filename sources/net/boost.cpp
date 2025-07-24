@@ -7,7 +7,7 @@
 #include <boost/asio/ssl/context.hpp>
 #include <boost/asio/ssl/stream.hpp>
 
-void AptabaseBoostHttpClient::MakeRequest(AptabaseHttpClientMethod method, const std::string& hostname, const std::string& path, const std::map<std::string, std::string>& headers, std::string&& body, CompleteCallbackType&& complete){
+void Aptabase::BoostHttpClient::MakeRequest(HttpClientMethod method, const std::string& hostname, const std::string& path, const std::map<std::string, std::string>& headers, std::string&& body, CompleteCallbackType&& complete){
     try {
         bool is_https = false;
         std::string clean_hostname = hostname;

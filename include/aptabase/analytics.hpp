@@ -3,49 +3,55 @@
 #include "model.hpp"
 #include "provider/provider.hpp"
 
-class AptabaseAnalytics {
-	std::unique_ptr<AptabaseProvider> m_Provider;
+namespace Aptabase{
 
-	std::string m_SessionId;
-	bool m_IsDebug = false;
+	class Analytics {
+		std::unique_ptr<Provider> m_Provider;
 
-	std::string m_AppVersion = "1.0.0";
-	std::string m_Locale = "en-US";
-	std::string m_OsVersion = "0.0.0";
-	std::string m_OsName = "Unknown";
+		std::string m_SessionId;
+		bool m_IsDebug = false;
 
-	AptabaseProvider::LogFunctionType m_LogFunction;
-public:
-	AptabaseAnalytics(std::unique_ptr<AptabaseProvider> &&provider, bool is_debug = false);
+		std::string m_AppVersion = "1.0.0";
+		std::string m_Locale = "en-US";
+		std::string m_OsVersion = "0.0.0";
+		std::string m_OsName = "Unknown";
 
-	void StartSession(const std::string &session_id = {});
+		Provider::LogFunctionType m_LogFunction;
+	public:
+		Analytics(std::unique_ptr<Provider> &&provider, bool is_debug = false);
 
-	void EndSession();
+		void StartSession(const std::string &session_id = {});
 
-	bool IsInSession()const;
+		void EndSession();
 
-	void RecordEvent(const std::string& event_name, const std::vector<ExtendedAnalyticsEventAttribute>& attributes = {});
+		bool IsInSession()const;
 
-	void Tick();
+		void RecordEvent(const std::string& event_name, const std::vector<EventAttribute>& attributes = {});
 
-	bool IsTickRequired()const;
+		void RecordEvent(Event &&event);
 
-	void SetDebug(bool is_debug);
+		void Tick();
 
-	bool IsDebug()const;
+		bool IsTickRequired()const;
 
-	void SetAppVersion(std::string &&app_version);
+		void SetDebug(bool is_debug);
 
-	void SetLocale(std::string &&locale);
+		bool IsDebug()const;
 
-	void SetOsVersion(std::string &&os_version);
+		void SetAppVersion(std::string &&app_version);
 
-	void SetOsName(std::string &&os_name);
+		void SetLocale(std::string &&locale);
 
-	void SetLog(AptabaseProvider::LogFunctionType &&log);
+		void SetOsVersion(std::string &&os_version);
 
-private:
-	std::string GetCurrentTimestamp() const;
+		void SetOsName(std::string &&os_name);
 
-	std::string GenerateSessionId() const;
-};
+		void SetLog(Provider::LogFunctionType &&log);
+
+	private:
+		std::string GetCurrentTimestamp() const;
+
+		std::string GenerateSessionId() const;
+	};
+
+}//namespace Aptabase::

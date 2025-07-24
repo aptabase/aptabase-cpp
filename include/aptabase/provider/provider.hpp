@@ -3,40 +3,39 @@
 #include "aptabase/model.hpp"
 #include "aptabase/net/client.hpp"
 
-enum class AptabaseProviderType {
-	Worker,
-	Tick
-};
+namespace Aptabase{
 
-enum class AptabaseProviderVerbosity {
-	Verbose,
-	Display,
-	Info,
-	Warning,
-	Error
-};
+	enum class Verbosity {
+		Verbose,
+		Display,
+		Info,
+		Warning,
+		Error
+	};
 
-extern const char *ToString(AptabaseProviderVerbosity verbosity);
+	extern const char *ToString(Verbosity verbosity);
 
-class AptabaseProvider {
-public:	
-	using LogFunctionType = std::function<void(AptabaseProviderVerbosity, const std::string &)>;
-public:
-	static void DefaultLogFunction(AptabaseProviderVerbosity verbosity, const std::string &message);
+	class Provider {
+	public:	
+		using LogFunctionType = std::function<void(Verbosity, const std::string &)>;
+	public:
+		static void DefaultLogFunction(Verbosity verbosity, const std::string &message);
 
-	virtual ~AptabaseProvider() = default;
+		virtual ~Provider() = default;
 
-	virtual void RecordEvent(AptabaseEventPayload &&event) = 0;
+		virtual void RecordEvent(Event &&event) = 0;
 
-	virtual void Flush() = 0;
+		virtual void Flush() = 0;
 
-	virtual bool AnyPending()const = 0;
+		virtual bool AnyPending()const = 0;
 
-	virtual bool AnySending()const = 0;
+		virtual bool AnySending()const = 0;
 
-	virtual void Tick(){ (void)0; }
+		virtual void Tick(){ (void)0; }
 
-	virtual bool IsTickRequired()const = 0;
+		virtual bool IsTickRequired()const = 0;
 
-	virtual void SetLog(LogFunctionType &&log) = 0;
-};
+		virtual void SetLog(LogFunctionType &&log) = 0;
+	};
+
+}//namespace Aptabase::

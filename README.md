@@ -59,9 +59,9 @@ int main(){
     std::string aptabase_app_url = "https://your.aptabase.url"
     bool aptabase_is_debug = true;
 
-    AptabaseAnalytics aptabase(
-        std::make_unique<AptabaseWorkerProvider>(
-			std::make_unique<AptabaseHttplibClient>(),
+    Aptabase::Analytics aptabase(
+        std::make_unique<Aptabase::WorkerProvider>(
+			std::make_unique<Aptabase::HttplibHttpClient>(),
 			aptabase_app_key,
 			aptabase_app_url
 		), 

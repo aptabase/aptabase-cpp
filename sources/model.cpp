@@ -1,6 +1,6 @@
 #include "aptabase/model.hpp"
 
-nlohmann::json AptabaseEventPayload::ToJson() const {
+nlohmann::json Aptabase::Event::ToJson() const {
 	nlohmann::json result = nlohmann::json::object();
 
 	result["timeStamp"] = timeStamp;

@@ -3,17 +3,18 @@
 #include "aptabase/provider/worker_provider.hpp"
 #include <iostream>
 
-const char *ToString(AptabaseProviderVerbosity verbosity) {
+const char *Aptabase::ToString(Verbosity verbosity) {
 	switch (verbosity) {
-	case AptabaseProviderVerbosity::Verbose: return "Verbose";
-	case AptabaseProviderVerbosity::Display: return "Display";
-	case AptabaseProviderVerbosity::Info: return "Info";
-	case AptabaseProviderVerbosity::Warning: return "Warning";
-	case AptabaseProviderVerbosity::Error: return "Error";
+	case Verbosity::Verbose: return "Verbose";
+	case Verbosity::Display: return "Display";
+	case Verbosity::Info: return "Info";
+	case Verbosity::Warning: return "Warning";
+	case Verbosity::Error: return "Error";
 	}
 
 	return "Unknown";
 }
-void AptabaseProvider::DefaultLogFunction(AptabaseProviderVerbosity verbosity, const std::string& message) {
+
+void Aptabase::Provider::DefaultLogFunction(Verbosity verbosity, const std::string& message) {
 	std::cout << ToString(verbosity) << ":" << message << '\n';
 }

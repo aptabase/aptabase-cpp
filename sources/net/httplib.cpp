@@ -6,7 +6,7 @@
 
 #include <httplib.h>
 
-void AptabaseHttplibClient::MakeRequest(AptabaseHttpClientMethod method, const std::string& hostname, const std::string& path, const std::map<std::string, std::string>& headers, std::string&& body, CompleteCallbackType&& complete){
+void Aptabase::HttplibHttpClient::MakeRequest(HttpClientMethod method, const std::string& hostname, const std::string& path, const std::map<std::string, std::string>& headers, std::string&& body, CompleteCallbackType&& complete){
 	httplib::Client client(hostname);
 
 	if (method == AptabaseHttpClientMethod::Post) {

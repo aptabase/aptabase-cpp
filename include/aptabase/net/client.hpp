@@ -5,18 +5,22 @@
 #include <map>
 #include "aptabase/model.hpp"
 
-enum class AptabaseHttpClientMethod {
-	Post
-};
+namespace Aptabase{
 
-extern const char *ToString(AptabaseHttpClientMethod method);
+	enum class HttpClientMethod {
+		Post
+	};
 
-class AptabaseHttpClient {
-public:
-	using CompleteCallbackType = std::function<void(std::int32_t)>;
-public:
+	extern const char *ToString(HttpClientMethod method);
 
-	virtual void MakeRequest(AptabaseHttpClientMethod method, const std::string &hostname, const std::string &path, const std::map<std::string, std::string> &headers, std::string&& body, CompleteCallbackType &&complete) = 0;
+	class HttpClient {
+	public:
+		using CompleteCallbackType = std::function<void(std::int32_t)>;
+	public:
 
-	void PostEvents(const std::string &url, const std::string &app_key, const std::vector<AptabaseEventPayload> &events, CompleteCallbackType &&callback);
-};
+		virtual void MakeRequest(HttpClientMethod method, const std::string &hostname, const std::string &path, const std::map<std::string, std::string> &headers, std::string&& body, CompleteCallbackType &&complete) = 0;
+
+		void PostEvents(const std::string &url, const std::string &app_key, const std::vector<Event> &events, CompleteCallbackType &&callback);
+	}; 
+
+}//namespace Aptabase::

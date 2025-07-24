@@ -5,32 +5,36 @@
 #include <variant>
 #include <nlohmann/json.hpp>
 
-struct ExtendedAnalyticsEventAttribute {
-	std::string key;
-	std::variant<std::string, float, double> value;
-};
+namespace Aptabase{
 
-struct AptabaseSystemProperties {
-	bool isDebug = false;
-	std::string locale;
-	std::string appVersion;
-	std::string sdkVersion;
-	std::string osName;
-	std::string osVersion;
+	struct EventAttribute {
+		std::string key;
+		std::variant<std::string, float, double> value;
+	};
 
-	NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(AptabaseSystemProperties, isDebug, locale, appVersion, sdkVersion, osName, osVersion)
-};
+	struct EventProperties {
+		bool isDebug = false;
+		std::string locale;
+		std::string appVersion;
+		std::string sdkVersion;
+		std::string osName;
+		std::string osVersion;
 
-struct AptabaseEventPayload {
-	std::string timeStamp;
-	std::string sessionId;
-	std::string eventName;
-	AptabaseSystemProperties systemProps;
-	std::vector<ExtendedAnalyticsEventAttribute> eventAttributes;
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(EventProperties, isDebug, locale, appVersion, sdkVersion, osName, osVersion)
+	};
 
-	nlohmann::json ToJson()const;
+	struct Event {
+		std::string timeStamp;
+		std::string sessionId;
+		std::string eventName;
+		EventProperties systemProps;
+		std::vector<EventAttribute> eventAttributes;
 
-	friend void to_json(nlohmann::json& json, const AptabaseEventPayload& payload) {
-		json = payload.ToJson();
-	}
-};
+		nlohmann::json ToJson()const;
+
+		friend void to_json(nlohmann::json& json, const Event& payload) {
+			json = payload.ToJson();
+		}
+	};
+
+}//namespace Aptabase::
