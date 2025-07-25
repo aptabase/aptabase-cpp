@@ -31,10 +31,6 @@ namespace Aptabase{
 
 		virtual bool AnySending()const = 0;
 
-		virtual void Tick(){ (void)0; }
-
-		virtual bool IsTickRequired()const = 0;
-
 		virtual void SetLog(LogFunctionType &&log) = 0;
 	};
 

@@ -34,10 +34,6 @@ namespace Aptabase{
 
 		void Flush();
 
-		void Tick();
-
-		bool IsTickRequired()const;
-
 		void SetDebug(bool is_debug);
 
 		bool IsDebug()const;

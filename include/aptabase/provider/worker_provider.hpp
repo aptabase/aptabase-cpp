@@ -47,8 +47,6 @@ namespace Aptabase{
 
         bool AnySending() const override;
 
-        bool IsTickRequired() const override { return false; }
-
         void SetLog(LogFunctionType&& log) { m_LogFunction = std::move(log); }
 
     private:

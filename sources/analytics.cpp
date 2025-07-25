@@ -16,11 +16,6 @@ Aptabase::Analytics::Analytics(std::unique_ptr<HttpClient> &&client, const std::
 	)
 {}
 
-void Aptabase::Analytics::Tick() {
-	if(m_Provider && IsTickRequired())
-		m_Provider->Tick();
-}
-
 void Aptabase::Analytics::StartSession(const std::string &session_id) {
 	if(IsInSession())
 		EndSession();
@@ -62,10 +57,6 @@ void Aptabase::Analytics::RecordEvent(Event&& event) {
 void Aptabase::Analytics::Flush() {
 	if(m_Provider)
 		m_Provider->Flush();
-}
-
-bool Aptabase::Analytics::IsTickRequired()const {
-	return m_Provider ? m_Provider->IsTickRequired() : false;
 }
 
 void Aptabase::Analytics::SetDebug(bool is_debug) {

@@ -22,8 +22,6 @@ namespace Aptabase{
 
 		bool AnySending()const override{ return m_RunningRequests; }
 
-		bool IsTickRequired()const override{ return false; }
-
 		void SetLog(LogFunctionType &&log)override;
 
 		void Log(Verbosity verbosity, const std::string &message);
