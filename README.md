@@ -60,11 +60,9 @@ int main(){
     bool aptabase_is_debug = true;
 
     Aptabase::Analytics aptabase(
-        std::make_unique<Aptabase::WorkerProvider>(
-			std::make_unique<Aptabase::HttplibHttpClient>(),
-			aptabase_app_key,
-			aptabase_app_url
-		), 
+		std::make_unique<Aptabase::HttplibHttpClient>(),
+		aptabase_app_key,
+		aptabase_app_url
 		aptabase_is_debug
     );
 

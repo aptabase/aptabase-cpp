@@ -1,4 +1,5 @@
 #include "aptabase/analytics.hpp"
+#include "aptabase/provider/auto_provider.hpp"
 #include <random>
 #include <chrono>
 #include <sstream>
@@ -6,6 +7,13 @@
 Aptabase::Analytics::Analytics(std::unique_ptr<Provider> &&provider, bool is_debug):
 	m_Provider(std::move(provider)),
 	m_IsDebug(is_debug)
+{}
+
+Aptabase::Analytics::Analytics(std::unique_ptr<HttpClient> &&client, const std::string &app_key, const std::string &app_url, bool is_debug):
+	Analytics(
+		std::make_unique<AutoProvider>(std::move(client), app_key, app_url),
+		is_debug
+	)
 {}
 
 void Aptabase::Analytics::Tick() {
@@ -49,6 +57,11 @@ void Aptabase::Analytics::RecordEvent(const std::string& event_name, const std::
 void Aptabase::Analytics::RecordEvent(Event&& event) {
 	if(m_Provider)
 		m_Provider->RecordEvent(std::move(event));
+}
+
+void Aptabase::Analytics::Flush() {
+	if(m_Provider)
+		m_Provider->Flush();
 }
 
 bool Aptabase::Analytics::IsTickRequired()const {

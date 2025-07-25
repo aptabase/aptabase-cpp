@@ -5,8 +5,10 @@ project ("Aptabase-Cpp")
 add_library(AptabaseCpp 
 	"./sources/model.cpp"
 	"./sources/analytics.cpp"
-	"./sources/provider/tick_provider.cpp"
 	"./sources/provider/provider.cpp"
+	"./sources/provider/manual_provider.cpp"
+	"./sources/provider/auto_provider.cpp"
+	"./sources/provider/tick_provider.cpp"
 	"./sources/provider/worker_provider.cpp"
 	"./sources/net/client.cpp"
 )

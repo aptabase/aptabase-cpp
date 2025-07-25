@@ -20,6 +20,8 @@ namespace Aptabase{
 	public:
 		Analytics(std::unique_ptr<Provider> &&provider, bool is_debug = false);
 
+		Analytics(std::unique_ptr<HttpClient> &&client, const std::string &app_key, const std::string &app_url, bool is_debug = false);
+
 		void StartSession(const std::string &session_id = {});
 
 		void EndSession();
@@ -29,6 +31,8 @@ namespace Aptabase{
 		void RecordEvent(const std::string& event_name, const std::vector<EventAttribute>& attributes = {});
 
 		void RecordEvent(Event &&event);
+
+		void Flush();
 
 		void Tick();
 
