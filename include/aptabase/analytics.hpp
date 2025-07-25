@@ -52,6 +52,8 @@ namespace Aptabase{
 		std::string GetCurrentTimestamp() const;
 
 		std::string GenerateSessionId() const;
+
+		void Log(Verbosity verbosity, const std::string &message);
 	};
 
 }//namespace Aptabase::

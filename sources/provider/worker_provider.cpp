@@ -82,7 +82,7 @@ void Aptabase::WorkerProvider::CopyAndFlushBatch()
         events,
         [this, count = events.size()](std::int32_t status) {
             if (status >= 200 && status < 300) {
-                m_LogFunction(Verbosity::Info, std::to_string(count) + " event(s) sent.");
+                m_LogFunction(Verbosity::Verbose, std::to_string(count) + " event(s) sent.");
             } else {
                 m_LogFunction(Verbosity::Error, "HTTP " + std::to_string(status) + " while sending " + std::to_string(count) + " event(s).");
             }

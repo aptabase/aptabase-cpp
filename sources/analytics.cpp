@@ -17,8 +17,10 @@ Aptabase::Analytics::Analytics(std::unique_ptr<HttpClient> &&client, const std::
 {}
 
 void Aptabase::Analytics::StartSession(const std::string &session_id) {
-	if(IsInSession())
+	if(IsInSession()){
+		Log(Verbosity::Warning, "StartSession: Note that old session '" + m_SessionId + "' was in progress, finishing");
 		EndSession();
+	}
 	
 	m_SessionId = session_id.size() ? session_id : GenerateSessionId();
 }
@@ -52,11 +54,15 @@ void Aptabase::Analytics::RecordEvent(const std::string& event_name, const std::
 void Aptabase::Analytics::RecordEvent(Event&& event) {
 	if(m_Provider)
 		m_Provider->RecordEvent(std::move(event));
+	else
+		Log(Verbosity::Error, "RecordEvent: Can't record event '" + event.EventName + "' without provider");
 }
 
 void Aptabase::Analytics::Flush() {
 	if(m_Provider)
 		m_Provider->Flush();
+	else
+		Log(Verbosity::Warning, "Flush: There is nothing flush without provider");
 }
 
 void Aptabase::Analytics::SetDebug(bool is_debug) {
@@ -105,4 +111,9 @@ std::string Aptabase::Analytics::GenerateSessionId() const{
 	std::uniform_int_distribution<> dist(10000000, 99999999);
 
 	return std::to_string(seconds) + std::to_string(dist(rng));
+}
+
+void Aptabase::Analytics::Log(Verbosity verbosity, const std::string& message) {
+	if(m_LogFunction)
+		m_LogFunction(verbosity, message);
 }

@@ -7,6 +7,11 @@ Aptabase::ManualProvider::ManualProvider(std::unique_ptr<HttpClient> &&client, c
 {}
 
 void Aptabase::ManualProvider::RecordEvent(Event&& event){
+	if(m_Pending.size() >= HttpClient::MaxEventsPerRequest){
+		Log(Verbosity::Error, "ManualProvider::RecordEvent: MaxEventsPerRequest of " + std::to_string(HttpClient::MaxEventsPerRequest) + " is reached, event '" + event.EventName+ "' was not recorded, please Flush and RecordEvent again");
+		return;
+	}
+
 	m_Pending.push_back(std::move(event));
 }
 
@@ -14,11 +19,14 @@ void Aptabase::ManualProvider::Flush(){
 	auto OnComplete = [this](std::int32_t code) {
 		//Handle retries
 		m_RunningRequests--;
-
-		Log(code == 200 ? Verbosity::Display : Verbosity::Error, "Request finished with code: " + std::to_string(code));
+		
+		Log(code == 200 ? Verbosity::Display: Verbosity::Error, "Request finished with code: " + std::to_string(code));
 	};
-	
-	//Handle max 25 events
+
+	if(m_Pending.size() >= HttpClient::MaxEventsPerRequest){
+		Log(Verbosity::Error, "ManualProvider::Flush: MaxEventsPerRequest of " + std::to_string(HttpClient::MaxEventsPerRequest) + " is reached, some events will be lost");
+	}
+
 	m_HttpClient->PostEvents(m_Url, m_AppKey, m_Pending, OnComplete);
 	m_RunningRequests++;
 
